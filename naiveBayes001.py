@@ -83,13 +83,9 @@ if __name__ == "__main__":
             spam_count = spam_count + 1
             # if even, add row to train_data_spam
             if((spam_count%2) == 0):
-                # train_data_spam = np.append(train_data_spam, an_instance, axis = 0)
-                #train_data_spam.append([an_instance, 0])
-                # train_data_spam.append([an_instance])
                 train_data_spam = np.append(train_data_spam, np.array([an_instance]), 0)
             # if spam count is odd, add row to test_data
             else:
-                # test_data = np.r_[test_data, an_instance]
                 test_data = np.append(test_data,np.array([an_instance]), 0)
         # instance not spam
         else:
@@ -97,26 +93,19 @@ if __name__ == "__main__":
             nospam_count = nospam_count + 1
             # if counter is even, add row to train_data_nospam
             if(nospam_count%2 ==0):
-                # train_data_nospam = np.r_[train_data_nospam, an_instance]
                 train_data_nospam = np.append(train_data_nospam, np.array([an_instance]), 0)
 
             # if count is odd, add row to test_data
             else:
-                # test_data = np.r_[test_data, an_instance]
                 test_data = np.append(test_data,np.array([an_instance]), 0)
     # // endfor
 
 
 
-
-
-        #np.concatenate(an_instance,
-        #print(an_instance)
-
 #    print("\n\n")
 #    print(spambase_data)
 #    print("\n\n")
-    print(f"train_data_spam: {train_data_spam}")
+    print(f"train_data_spam: \n{train_data_spam}")
     # print(train_data_spam)
 #    transposed_spam = spambase_data.transpose()
 #    print(transposed_spam)
