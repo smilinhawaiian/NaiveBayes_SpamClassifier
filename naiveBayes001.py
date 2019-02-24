@@ -61,7 +61,7 @@ if __name__ == "__main__":
     # split row instances into spam and not spam for training
     # mixed for testing - keeping same proportions test/train sets
 
-    print("\n\n")
+    print("\n")
     # counts for making sure data is split evenly
     spam_count = -1
     nospam_count = -1
@@ -100,13 +100,39 @@ if __name__ == "__main__":
                 test_data = np.append(test_data,np.array([an_instance]), 0)
     # // endfor
 
+    # declare vars for checking prior probability
+    spam_test_num = 0
+    nospam_test_num = 0
+#    check that there is 40% spam
+    for spam_test_instance in train_data_spam:
+        spam_test_num = spam_test_num + 1
 
+    for nospam_test_instance in train_data_nospam:
+        nospam_test_num = nospam_test_num + 1
+
+    total_test_num = spam_test_num + nospam_test_num
+
+    # calculate percent of spam
+    prob_test_spam = spam_test_num / total_test_num
+    # calculate percent not spam
+    prob_test_nospam = nospam_test_num / total_test_num
+
+    # print prior probability of spam test data
+    print("Prior Probability of spam = %f \n" %prob_test_spam)
+    # print prior probability of not spam test data
+    print("Prior Probability of not spam = %f \n" %prob_test_nospam)
+
+# For each of the 57 features, compute the mean and 
+#  standard deviation in the training set of the values
+#  given each class
+# To avoid the problem any standard deviation = 0
+#  add a small value - epsilon - 0.0001
+#  to each standard deviation that you compute.
 
 #    print("\n\n")
 #    print(spambase_data)
 #    print("\n\n")
-    print(f"train_data_spam: \n{train_data_spam}")
-    # print(train_data_spam)
+#    print(f"train_data_spam: \n{train_data_spam}")
 #    transposed_spam = spambase_data.transpose()
 #    print(transposed_spam)
     print("\n\n")
