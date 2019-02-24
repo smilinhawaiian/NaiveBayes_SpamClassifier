@@ -67,37 +67,40 @@ if __name__ == "__main__":
     nospam_count = -1
 
     # arrays for test and train data
-    train_data_spam = np.zeros(spambase_data.shape)
-    train_data_nospam = np.zeros(58)
-    test_data = np.zeros(58)
+    train_data_spam = [[]]
+    train_data_nospam = []
+    test_data = []
     #print(train_data_spam)
-    #train_data_nospam = np.zeros(58)
-    #test_data = np.zeros(58)
-    print(train_data_spam)
 
     #** add randomization of spambase data array here
 
+    # for every row, check if spam. Add equal parts spam/not spam to test/train sets
     for an_instance in spambase_data:
         # check if an_instance is spam
-        # instance is spam
+        # instance is spam (last value in column is 1)
         if(an_instance[-1] == 1):
+            #print(an_instance[-1]) for testing
+            # increment spam counter
             spam_count = spam_count + 1
-            if(spam_count == 0): #first instance
-                train_data_spam = np.r_[train_data_spam, an_instance]
-            elif((spam_count%2) == 0):
-                # add to test_data array
+            # if even, add row to train_data_spam
+            if((spam_count%2) == 0):
+                #train_data_spam = np.append(train_data_spam, an_instance, axis = 0)
+                #train_data_spam.append([an_instance, 0])
+                train_data_spam.append([an_instance])
+            # if spam count is odd, add row to test_data
             else:
                 test_data = np.r_[test_data, an_instance]
-            #if(spam_count == 0): #first instance
-            #    train_data_spam = np.r_[train_data_spam, an_instance]
-            #print(an_instance[-1])
         # instance not spam
         else:
+            # increment no_spam counter
             nospam_count = nospam_count + 1
+            # if counter is even, add row to train_data_nospam
             if(nospam_count%2 ==0):
                 train_data_nospam = np.r_[train_data_nospam, an_instance]
+            # if count is odd, add row to test_data
             else:
                 test_data = np.r_[test_data, an_instance]
+    # // endfor
 
 
 
@@ -106,10 +109,6 @@ if __name__ == "__main__":
         #np.concatenate(an_instance,
         #print(an_instance)
 
-#    train_data_spam = 
-#    train_data_nospam = 
-
-    
 #    print("\n\n")
 #    print(spambase_data)
 #    print("\n\n")
