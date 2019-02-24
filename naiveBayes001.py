@@ -142,21 +142,48 @@ if __name__ == "__main__":
     ttrain_nospam = train_nospam.transpose()
     ttest_data = test_data.transpose()
 
+    # Compute the mean ttrain_spam
+    train_smean = np.empty((57,0), int)
+    for a_feature in ttrain_spam:
+        #row_mean = np.empty((1,0), int)
+        #row_mean = np.mean(np.array([a_feature]), axis=0)
+        row_mean = np.array([a_feature.mean()])
+        print(row_mean) #for testing
+        #train_smean = np.append(train_smean, np.array([row_mean]))  #works
+        train_smean = np.append(train_smean, row_mean)
+        #train_smean = np.append(train_smean, np.mean(np.array([a_feature]), axis=0, out=train_smean))
+        #train_data_spam = np.append(train_data_spam, np.array([an_instance]), 0)
+    # // endfor
+
+    #train_smean = np.empty((58,0), int)
+    #train_smean = np.empty(57)
+    #train_smean = np.mean(ttrain_spam, axis=0, dtype=None, out=train_smean)
+    print("")
+    print(train_smean) # for testing
+
+    # Compute the mean ttrain_nospam
+    train_nosmean = np.empty((57,0),int)
+    for b_feature in ttrain_nospam:
+        brow_mean = np.array([b_feature.mean()])
+        print(brow_mean) #for testing
+        train_nosmean = np.append(train_nosmean, brow_mean)
+    # // endfor
+
+    print("")
+    print(train_nosmean) # for testing
+    # Compute the standard deviation ttrain_spam
+    #train_ssdev = 
+    # Compute the standard deviation ttrain_nospam
+    #train_nossdev = 
 
 
-
-
-
-
-#    print("\n\n")
-#    print(spambase_data)
 #    print("\n\n")
 #    print(f"train_data_spam: \n{train_data_spam}")
 #    print(f"train_spam: \n{train_spam}")
 #    print(f"ttrain_spam: \n{ttrain_spam}")
-#    transposed_spam = spambase_data.transpose()
-#    print(transposed_spam)
     print("\n\n")
+
+#    for notes below only
 #    test_labels = spambase_data[:,0]
 
 
