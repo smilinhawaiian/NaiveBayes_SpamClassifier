@@ -69,7 +69,7 @@ if __name__ == "__main__":
     # arrays for test and train data
     train_data_spam = np.empty((0,58), int)
     train_data_nospam = np.empty((0,58), int)
-    test_data = np.empty((0,58), int)
+    testing_data = np.empty((0,58), int)
 
     #** add randomization of spambase data array here
 
@@ -86,7 +86,7 @@ if __name__ == "__main__":
                 train_data_spam = np.append(train_data_spam, np.array([an_instance]), 0)
             # if spam count is odd, add row to test_data
             else:
-                test_data = np.append(test_data,np.array([an_instance]), 0)
+                testing_data = np.append(testing_data,np.array([an_instance]), 0)
         # instance not spam
         else:
             # increment no_spam counter
@@ -97,8 +97,13 @@ if __name__ == "__main__":
 
             # if count is odd, add row to test_data
             else:
-                test_data = np.append(test_data,np.array([an_instance]), 0)
+                testing_data = np.append(testing_data,np.array([an_instance]), 0)
     # // endfor
+
+    # remove spam/no spam identifying column from each matrix
+    train_spam = np.delete(train_data_spam, -1, axis=1)
+    train_nospam = np.delete(train_data_nospam, -1, axis=1)
+    test_data = np.delete(testing_data, -1, axis=1)
 
     # declare vars for checking prior probability
     spam_test_num = 0
@@ -122,6 +127,9 @@ if __name__ == "__main__":
     # print prior probability of not spam test data
     print("Prior Probability of not spam = %f \n" %prob_test_nospam)
 
+    #print("total spam examples = %d\n" %spam_count) #for testing
+    #print("test spam examples = %d\n" %spam_test_num) #for testing
+
 # For each of the 57 features, compute the mean and 
 #  standard deviation in the training set of the values
 #  given each class
@@ -129,10 +137,23 @@ if __name__ == "__main__":
 #  add a small value - epsilon - 0.0001
 #  to each standard deviation that you compute.
 
+    # Transpose matrices for computation
+    ttrain_spam = train_spam.transpose()
+    ttrain_nospam = train_nospam.transpose()
+    ttest_data = test_data.transpose()
+
+
+
+
+
+
+
 #    print("\n\n")
 #    print(spambase_data)
 #    print("\n\n")
 #    print(f"train_data_spam: \n{train_data_spam}")
+#    print(f"train_spam: \n{train_spam}")
+#    print(f"ttrain_spam: \n{ttrain_spam}")
 #    transposed_spam = spambase_data.transpose()
 #    print(transposed_spam)
     print("\n\n")
