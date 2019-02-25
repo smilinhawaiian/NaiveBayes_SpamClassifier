@@ -7,7 +7,6 @@ import numpy as np
 import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
-from statistics import mean
 import statistics
 import math
 
@@ -56,8 +55,15 @@ import math
 # create confusion matrix
 
 
+
 # python for main method:
 if __name__ == "__main__":
+
+
+    # 1. 
+    # Create training and test set:
+
+
     # Read in and create matrice of data
     spambase_data = pd.read_csv("spambase/spambase_copy.csv", header=None).values
     print("\n")
@@ -108,6 +114,11 @@ if __name__ == "__main__":
     train_notspam = np.delete(train_data_notspam, -1, axis=1)
     test_data = np.delete(testing_data, -1, axis=1)
 
+
+    # 2. 
+    # Create probabilistic model.
+
+
     # declare vars for checking prior probability
     spam_train_num = 0
     notspam_train_num = 0
@@ -130,13 +141,9 @@ if __name__ == "__main__":
     # print prior probability of not spam test data
     print("Prior Probability of not spam = %f \n" %prob_train_notspam)
 
-    #print("total spam examples = %d\n" %spam_count) #for testing
-    #print("test spam examples = %d\n" %spam_train_num) #for testing
-
     # Transposed matrices for computation
     ttrain_spam = train_spam.transpose()
     ttrain_notspam = train_notspam.transpose()
-    #ttest_data = test_data.transpose()
 
     # Vectors to hold mean and stdev of training spam class instances
     train_spam_mean = np.empty((57,0), int)
@@ -168,7 +175,10 @@ if __name__ == "__main__":
         train_notspam_stdev = np.append(train_notspam_stdev, b_row_stdev)
     # // endfor
 
-# 3.
+
+    # 3. 
+    # Run Naive Bayes on the test data.
+
 
     #randomly mix the test data (shuffle columns) 
     shuffled_test = np.zeros(test_data.shape)
@@ -199,9 +209,17 @@ if __name__ == "__main__":
     # output results
     total_tested = test_spam_count + test_notspam_count
     percent_spam_predicted = test_spam_count/total_tested
-    print(f"Total spam predicted = {test_spam_count}\n")
-    print(f"Total notspam predicted = {test_notspam_count}\n")
+    percent_notspam_predicted = test_notspam_count/total_tested
+    #print(f"Total spam predicted = {test_spam_count}\n")
+    #print(f"Total notspam predicted = {test_notspam_count}\n")
     print(f"Percentage of spam predicted in test: {percent_spam_predicted}\n")
+    print(f"Percentage of not spam predicted in test: {percent_notspam_predicted}\n")
+
+    #STILL NEED TO DO
+    #accuracy
+    #precision
+    #recall
+    #confusion matrix
 
 
 
