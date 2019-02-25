@@ -7,6 +7,8 @@ import numpy as np
 import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
+from statistics import mean
+import statistics
 
 
 # 1. 
@@ -55,13 +57,9 @@ import matplotlib.pyplot as plt
 
 # python for main method:
 if __name__ == "__main__":
-    print("\n")
     # Read in and create matrice of data
     spambase_data = pd.read_csv("spambase/spambase_copy.csv", header=None).values
-
-    ##print(f"spambase_data: \n{spambase_data}") # for testing 00.
-    # split row instances into spam and not spam for training
-    # mixed for testing - keeping same proportions test/train sets
+    print("\n")
 
     # counts for making sure data is split evenly
     spam_count = -1
@@ -72,16 +70,26 @@ if __name__ == "__main__":
     train_data_notspam = np.empty((0,58), int)
     testing_data = np.empty((0,58), int)
 
-    #** add randomization of spambase data array here
-    #np.random.shuffle(arrayToShuffle) #This is an option
+    # for testing:
+    #num_rows = spambase_data.shape[0]
+    #num_cols = spambase_data.shape[1]
+    #print(f"spambase num rows: {num_rows}\n")
+    #print(f"spambase num cols: {num_cols}\n")
+
+    # add randomization of spambase data array here
     shuffled_base = np.zeros(spambase_data.shape)
     np.take(spambase_data,np.random.permutation(spambase_data.shape[0]),axis=0,out=shuffled_base)
 
-    ##print(f"spambase_data: \n{spambase_data}") # for testing 00.
-    ##print(f"shuffled_base: \n{shuffled_base}") # for testing 0.
+    # for testing:
+    #num_rows = shuffled_base.shape[0]
+    #num_cols = shuffled_base.shape[1]
+    #print(f"shuffled num rows: {num_rows}\n")
+    #print(f"shuffled num cols: {num_cols}\n")
 
+    # split row instances into spam and not spam for training
+    # mixed for testing - keeping same proportions test/train sets
     # for every row, check if spam. Add equal parts spam/not spam to test/train sets
-    for an_instance in spambase_data:
+    for an_instance in shuffled_base:
         # check if an_instance is spam
         # instance is spam (last value in column is 1)
         if(an_instance[-1] == 1):
@@ -101,16 +109,39 @@ if __name__ == "__main__":
             # if counter is even, add row to train_data_nospam
             if(notspam_count%2 ==0):
                 train_data_notspam = np.append(train_data_notspam, np.array([an_instance]), axis=0)
-
             # if count is odd, add row to test_data
             else:
                 testing_data = np.append(testing_data,np.array([an_instance]), axis=0)
     # // endfor
 
+    # for testing:
+    #print(f"testing_data: \n{testing_data}\n") # for testing 3.
+    #print(f"test_data: \n{test_data}\n") # for testing 6.
+    #print(f"ttest_data: \n{ttest_data}\n") # for testing 9.
+    #print(f"shuffled_test: \n{shuffled_test}\n") # for testing 14.
+    #num_rows = testing_data.shape[0]
+    #num_cols = testing_data.shape[1]
+    #print(f"num rows: {num_rows}\n")
+    #print(f"num cols: {num_cols}\n")
+
     # remove spam/no spam identifying column at end row from each matrix
     train_spam = np.delete(train_data_spam, -1, axis=1)
     train_notspam = np.delete(train_data_notspam, -1, axis=1)
     test_data = np.delete(testing_data, -1, axis=1)
+
+    # for testing:
+    #print(f"testing_data: \n{testing_data}") # for testing 3.
+    #print(f"test_data: \n{test_data}\n") # for testing 6.
+    #print(f"ttest_data: \n{ttest_data}\n") # for testing 9.
+    #print(f"shuffled_test: \n{shuffled_test}\n") # for testing 14.
+    #num_rows = test_data.shape[0]
+    #num_cols = test_data.shape[1]
+    #print(f"num rows: {num_rows}\n")
+    #print(f"num cols: {num_cols}\n")
+
+    #randomly mix the test data
+    #shuffled_test = np.zeros(ttest_data.shape)
+    #np.take(ttest_data,np.random.permutation(ttest_data.shape[0]),axis=0,out=shuffled_test)
 
     # declare vars for checking prior probability
     spam_test_num = 0
@@ -146,21 +177,29 @@ if __name__ == "__main__":
     train_spam_mean = np.empty((57,0), int)
     train_spam_stdev = np.empty((57,0), int)
 
+    first = 0; # for testing
     # Compute the mean and std deviation of training spam instances
     for a_feature in ttrain_spam:
         # Compute the mean of each row of ttrain_spam
-        a_row_mean = np.array([a_feature.mean()])
+        #a_row_mean = np.array([a_feature.mean()])
+        a_row_mean = statistics.mean(a_feature)
+
         # Compute the standard deviation of each row of ttrain_spam
         # add 0.0001 to stdev to ensure there are no zeros
-        a_row_stdev = (np.array([a_feature.std()]) + 0.0001)
+        #a_row_stdev = (np.array([a_feature.std()]) + 0.0001)
+        a_row_stdev = statistics.stdev(a_feature, xbar=a_row_mean)+.0001
+        # for testing
+        if(first == 0):
+            print(f"a_feature: \n {a_feature}")
+            print(f"a_row_mean: {a_row_mean}\n")
+            print(f"a_rowstdev: {a_row_stdev}\n")
+            first = 1;
         # add row mean and std dev to their respective vectors
         train_spam_mean = np.append(train_spam_mean, a_row_mean)
         train_spam_stdev = np.append(train_spam_stdev, a_row_stdev)
     # // endfor
 
     #print("")
-    #print(f"train_spam_mean: \n{train_spam_mean}") # for testing
-    #print(f"train_spam_stdev: \n{train_spam_stdev}") # for testing
 
     # Vectors to hold mean and stdev of notspam instances
     train_notspam_mean = np.empty((57,0),int)
@@ -177,6 +216,23 @@ if __name__ == "__main__":
         train_notspam_stdev = np.append(train_notspam_stdev, b_row_stdev)
     # // endfor
 
+    # for testing
+    print(f"train_spam_mean: \n{train_spam_mean}\n") # for testing 10.
+    num_rows = train_spam_mean.shape[0]
+    #num_cols = train_spam_mean.shape[1]
+    print(f"num rows: {num_rows}\n")
+    #print(f"num cols: {num_cols}\n")
+
+    # for testing
+    print(f"train_spam_stdev: \n{train_spam_stdev}\n") # for testing 11.
+    #print(f"train_notspam_mean: \n{train_notspam_mean}\n") # for testing 12.
+    #print(f"train_notspam_stdev: \n{train_notspam_stdev}\n") # for testing 13.
+    num_rows = train_spam_stdev.shape[0]
+    #num_cols = train_spam_stdev.shape[]
+    print(f"num rows: {num_rows}\n")
+    #print(f"num cols: {num_cols}\n")
+
+
 
 # 3. 
 # Run Naive Bayes on the test data.
@@ -189,8 +245,37 @@ if __name__ == "__main__":
 # N(x ; m , stdev) = [ (1/ (sqrt(2pi)*stdev) )*( e^ ((x-m)^2 / (2*o^2) ) ) ]# *Because product of 58 probabilities will be small, use log of product
 #   since argmax f(z) = argmax log(f(z))
 
-    #randomly mix the test data
-    #np.take(test_data,np.random.permutation(X.shape[0]),axis=0,out=X)
+    # for testing:
+    #print(f"testing_data: \n{testing_data}\n") # for testing 3.
+    #print(f"test_data: \n{test_data}\n") # for testing 6.
+    #print(f"ttest_data: \n{ttest_data}\n") # for testing 9.
+    #print(f"shuffled_test: \n{shuffled_test}\n") # for testing 14.
+    #num_rows = ttest_data.shape[0]
+    #num_cols = ttest_data.shape[1]
+    #print(f"num rows: {num_rows}\n")
+    #print(f"num cols: {num_cols}\n")
+
+    #randomly mix the test data (shuffle columns) 
+    shuffled_test = np.zeros(ttest_data.shape)
+    np.take(ttest_data,np.random.permutation(ttest_data.shape[1]),axis=1,out=shuffled_test)
+
+    # for testing:
+    #print(f"testing_data: \n{testing_data}\n") # for testing 3.
+    #print(f"test_data: \n{test_data}\n") # for testing 6.
+    #print(f"ttest_data: \n{ttest_data}\n") # for testing 9.
+    #print(f"shuffled_test: \n{shuffled_test}\n") # for testing 14.
+    #num_rows = shuffled_test.shape[0]
+    #num_cols = shuffled_test.shape[1]
+    #print(f"num rows: {num_rows}\n")
+    #print(f"num cols: {num_cols}\n")
+
+
+    # Use gaussian naive bayes to classify instances in data set
+    # Calculate probability(spam)
+    # Calculate probability(not spam)
+
+
+
 
 
 
@@ -201,30 +286,33 @@ if __name__ == "__main__":
     #print("")
 
     # Spambase data read in from csv file
-    #print(f"spambase_data: \n{spambase_data}") # for testing 00.
+    #print(f"spambase_data: \n{spambase_data}\n") # for testing 00.
     # Shuffled spambase data
-    #print(f"shuffled_base: \n{shuffled_base}") # for testing 0.
+    #print(f"shuffled_base: \n{shuffled_base}\n") # for testing 0.
 
     # Original matrices created to store training and testing data
-    #print(f"train_data_spam: \n{train_data_spam}") # for testing 1.
-    #print(f"train_data_notspam: \n{train_data_notspam}") # for testing 2.
-    #print(f"testing_data: \n{testing_data}") # for testing 3.
+    #print(f"train_data_spam: \n{train_data_spam}\n") # for testing 1.
+    #print(f"train_data_notspam: \n{train_data_notspam}\n") # for testing 2.
+    #print(f"testing_data: \n{testing_data}\n") # for testing 3.
 
     # Arrays removed spam/no spam identifying column at end row from each matrix
-    #print(f"train_spam: \n{train_spam}") # for testing 4.
-    #print(f"train_notspam: \n{train_notspam}") # for testing 5.
-    #print(f"test_data: \n{test_data}") # for testing 6.
+    #print(f"train_spam: \n{train_spam}\n") # for testing 4.
+    #print(f"train_notspam: \n{train_notspam}\n") # for testing 5.
+    #print(f"test_data: \n{test_data}\n") # for testing 6.
     
     # Transposed matrices for computation
-    #print(f"ttrain_spam: \n{ttrain_spam}") # for testing 7.
-    #print(f"ttrain_notspam: \n{ttrain_notspam}") # for testing 8.
-    #print(f"ttest_data: \n{ttest_data}") # for testing 9.
+    #print(f"ttrain_spam: \n{ttrain_spam}\n") # for testing 7.
+    #print(f"ttrain_notspam: \n{ttrain_notspam}\n") # for testing 8.
+    #print(f"ttest_data: \n{ttest_data}\n") # for testing 9.
 
     # Vectors to hold mean and stdev of training spam class instances
-    #print(f"train_spam_mean: \n{train_spam_mean}") # for testing 10.
-    #print(f"train_spam_stdev: \n{train_spam_stdev}") # for testing 11.
-    #print(f"train_notspam_mean: \n{train_notspam_mean}") # for testing 12.
-    #print(f"train_notspam_stdev: \n{train_notspam_stdev}") # for testing 13.
+    #print(f"train_spam_mean: \n{train_spam_mean}\n") # for testing 10.
+    #print(f"train_spam_stdev: \n{train_spam_stdev}\n") # for testing 11.
+    #print(f"train_notspam_mean: \n{train_notspam_mean}\n") # for testing 12.
+    #print(f"train_notspam_stdev: \n{train_notspam_stdev}\n") # for testing 13.
+
+    # Shuffled test data
+    #print(f"shuffled_test: \n{shuffled_test}\n") # for testing 14.
 
     #print("")
     print("\n\n")
@@ -232,3 +320,13 @@ if __name__ == "__main__":
 #    for notes below only
 #    test_labels = spambase_data[:,0]
 
+#    randomly shuffle data by rows
+    #np.take(test_data,np.random.permutation(X.shape[0]),axis=0,out=X)
+    #np.random.shuffle(arrayToShuffle) #This is an option
+
+    #print num rows
+    #num_rows = shuffled_test.shape[0]
+    #print(f"num rows: {num_rows}\n")
+    #print num cols
+    #num_cols = shuffled_test.shape[1]
+    #print(f"num cols: {num_cols}\n")
