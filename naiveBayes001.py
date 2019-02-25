@@ -109,34 +109,34 @@ if __name__ == "__main__":
     test_data = np.delete(testing_data, -1, axis=1)
 
     # declare vars for checking prior probability
-    spam_test_num = 0
-    notspam_test_num = 0
+    spam_train_num = 0
+    notspam_train_num = 0
     # check that there is 40% spam
-    for spam_test_instance in train_data_spam:
-        spam_test_num = spam_test_num + 1
+    for spam_train_instance in train_data_spam:
+        spam_train_num = spam_train_num + 1
     # check that there is 60% not spam
-    for notspam_test_instance in train_data_notspam:
-        notspam_test_num = notspam_test_num + 1
+    for notspam_train_instance in train_data_notspam:
+        notspam_train_num = notspam_train_num + 1
 
-    total_test_num = spam_test_num + notspam_test_num
+    total_train_num = spam_train_num + notspam_train_num
 
     # calculate percent of spam
-    prob_test_spam = spam_test_num / total_test_num
+    prob_train_spam = spam_train_num / total_train_num
     # calculate percent not spam
-    prob_test_notspam = notspam_test_num / total_test_num
+    prob_train_notspam = notspam_train_num / total_train_num
 
     # print prior probability of spam test data
-    print("Prior Probability of spam = %f \n" %prob_test_spam)
+    print("Prior Probability of spam = %f \n" %prob_train_spam)
     # print prior probability of not spam test data
-    print("Prior Probability of not spam = %f \n" %prob_test_notspam)
+    print("Prior Probability of not spam = %f \n" %prob_train_notspam)
 
     #print("total spam examples = %d\n" %spam_count) #for testing
-    #print("test spam examples = %d\n" %spam_test_num) #for testing
+    #print("test spam examples = %d\n" %spam_train_num) #for testing
 
     # Transposed matrices for computation
     ttrain_spam = train_spam.transpose()
     ttrain_notspam = train_notspam.transpose()
-    ttest_data = test_data.transpose()
+    #ttest_data = test_data.transpose()
 
     # Vectors to hold mean and stdev of training spam class instances
     train_spam_mean = np.empty((57,0), int)
@@ -170,24 +170,6 @@ if __name__ == "__main__":
         train_notspam_stdev = np.append(train_notspam_stdev, b_row_stdev)
     # // endfor
 
-    # for testing
-    print(f"train_spam_mean: \n{train_spam_mean}\n") # for testing 10.
-    num_rows = train_spam_mean.shape[0]
-    #num_cols = train_spam_mean.shape[1]
-    print(f"num rows: {num_rows}\n")
-    #print(f"num cols: {num_cols}\n")
-
-    # for testing
-    print(f"train_spam_stdev: \n{train_spam_stdev}\n") # for testing 11.
-    #print(f"train_notspam_mean: \n{train_notspam_mean}\n") # for testing 12.
-    #print(f"train_notspam_stdev: \n{train_notspam_stdev}\n") # for testing 13.
-    num_rows = train_spam_stdev.shape[0]
-    #num_cols = train_spam_stdev.shape[]
-    print(f"num rows: {num_rows}\n")
-    #print(f"num cols: {num_cols}\n")
-
-
-
 # 3. 
 # Run Naive Bayes on the test data.
 
@@ -202,56 +184,26 @@ if __name__ == "__main__":
 
 
     #randomly mix the test data (shuffle columns) 
-    shuffled_test = np.zeros(ttest_data.shape)
-    np.take(ttest_data,np.random.permutation(ttest_data.shape[1]),axis=1,out=shuffled_test)
-    # for testing
-    num_rows = shuffled_test.shape[0]
-    num_cols = shuffled_test.shape[1]
-    print(f"shuffled_test num rows: {num_rows}\n")
-    print(f"shuffled_test num cols: {num_cols}\n")
+    shuffled_test = np.zeros(test_data.shape)
+    np.take(test_data,np.random.permutation(test_data.shape[0]),axis=0,out=shuffled_test)
 
-    #transpose shuffled test
-    tshuffled_test = shuffled_test.transpose()
-    num_rows = tshuffled_test.shape[0]
-    num_cols = tshuffled_test.shape[1]
-    print(f"tshuffled_test num rows: {num_rows}\n")
-    print(f"tshuffled_test num cols: {num_cols}\n")
-
-    # Results vector to hold instance probability given spam
+    # Results vectors to hold instance probability given spam or not spam
     spam_results = np.zeros(train_spam_stdev.shape)
-    num_rows = spam_results.shape[0]
-    #num_cols = spam_results.shape[1]
-    print(f"spam_results num rows: {num_rows}\n")
-    #print(f"spam_results num cols: {num_cols}\n")
-    # Results vector to hold instance probability gievn not spam
     notspam_results = np.zeros(train_spam_mean.shape)
 
-    first = 0
+    # Vars to hold spam count during testing
     test_spam_count = 0
     test_notspam_count = 0
+
     # Use gaussian naive bayes to classify instances in data set
-    for test_i in tshuffled_test:
-        if(first == 0):
-            print(f"test_i: \n {test_i}\n")
-            num_rows = test_i.shape[0]
-            print(f"test_i num rows: {num_rows}\n")
-            first = 1
+    for test_i in shuffled_test:
         # Calculate probability(spam)
-        #spam_results = (np.log(prob_test_spam))-(np.log(math.sqrt(2*np.pi)*train_spam_stdev))-(((test_i - train_spam_mean)**2)/(2*(train_spam_stdev**2)))
         spam_results = -(np.log(math.sqrt(2*np.pi)*train_spam_stdev))-(((test_i - train_spam_mean)**2)/(2*(train_spam_stdev**2)))
         # Calculate probability(not spam)
         notspam_results = -(np.log(math.sqrt(2*np.pi)*train_notspam_stdev))-(((test_i - train_notspam_mean)**2)/(2*(train_notspam_stdev**2)))
-        if(first == 1):
-            print(f"spam_results: \n {spam_results}\n")
-            num_rows = spam_results.shape[0]
-            print(f"spam_results num rows: {num_rows}\n")
-            print(f"notspam_results: \n {spam_results}\n")
-            num_rows = notspam_results.shape[0]
-            print(f"notspam_results num rows: {num_rows}\n")
-            first = 2
         # calculate if prediction spam or notspam is greater
-        spam_max = (sum(spam_results)) + (np.log(prob_test_spam))
-        notspam_max = (sum(notspam_results)) + (np.log(prob_test_notspam))
+        spam_max = (sum(spam_results)) + (np.log(prob_train_spam))
+        notspam_max = (sum(notspam_results)) + (np.log(prob_train_notspam))
         if(spam_max > notspam_max):
             test_spam_count = test_spam_count + 1
         else:
@@ -263,6 +215,13 @@ if __name__ == "__main__":
     print(f"Total spam predicted = {test_spam_count}\n")
     print(f"Total notspam predicted = {test_notspam_count}\n")
     print(f"Percentage of spam predicted in test: {percent_spam_predicted}\n")
+
+
+
+
+
+
+
 
 
     #print(f"spam_results: \n{spam_results}\n") # for testing 15.
