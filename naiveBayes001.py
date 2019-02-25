@@ -42,7 +42,8 @@ import math
 # using the means and standard deviations computed in part 2.
 # P(x_i | c_j) = N(x_i ; m_(i,c_j) , stdev_(i,c_j) )
 # where
-# N(x ; m , stdev) = [ (1/ (sqrt(2pi)*stdev) )*( e^ ((x-m)^2 / (2*o^2) ) ) ]# *Because product of 58 probabilities will be small, use log of product
+# N(x ; m , stdev) = [ (1/ (sqrt(2pi)*stdev) )*( e^ ((x-m)^2 / (2*o^2) ) ) ]
+# *Because product of 58 probabilities will be small, use log of product
 #   since argmax f(z) = argmax log(f(z))
 
 
@@ -75,7 +76,7 @@ if __name__ == "__main__":
     # arrays for test and train data
     train_data_spam = np.empty((0,58), int)
     train_data_notspam = np.empty((0,58), int)
-    testing_data = np.empty((0,58), int)
+    test_data = np.empty((0,58), int)
 
     # add randomization of spambase data array here
     shuffled_base = np.zeros(spambase_data.shape)
@@ -96,7 +97,7 @@ if __name__ == "__main__":
                 train_data_spam = np.append(train_data_spam, np.array([an_instance]), axis=0)
             # if spam count is odd, add row to test_data
             else:
-                testing_data = np.append(testing_data,np.array([an_instance]), axis=0)
+                test_data = np.append(test_data,np.array([an_instance]), axis=0)
         # instance not spam
         else:
             # increment no_spam counter
@@ -106,13 +107,13 @@ if __name__ == "__main__":
                 train_data_notspam = np.append(train_data_notspam, np.array([an_instance]), axis=0)
             # if count is odd, add row to test_data
             else:
-                testing_data = np.append(testing_data,np.array([an_instance]), axis=0)
+                test_data = np.append(test_data,np.array([an_instance]), axis=0)
     # // endfor
 
     # remove spam/no spam identifying column at end row from each matrix
     train_spam = np.delete(train_data_spam, -1, axis=1)
     train_notspam = np.delete(train_data_notspam, -1, axis=1)
-    test_data = np.delete(testing_data, -1, axis=1)
+    #test_data = np.delete(testing_data, -1, axis=1)
 
 
     # 2. 
@@ -139,7 +140,7 @@ if __name__ == "__main__":
     # print prior probability of spam test data
     print("Prior Probability of spam = %f \n" %prob_train_spam)
     # print prior probability of not spam test data
-    print("Prior Probability of not spam = %f \n" %prob_train_notspam)
+    #print("Prior Probability of not spam = %f \n" %prob_train_notspam)
 
     # Transposed matrices for computation
     ttrain_spam = train_spam.transpose()
@@ -180,9 +181,15 @@ if __name__ == "__main__":
     # Run Naive Bayes on the test data.
 
 
+    #test_data = np.delete(testing_data, -1, axis=1)
+
     #randomly mix the test data (shuffle columns) 
     shuffled_test = np.zeros(test_data.shape)
     np.take(test_data,np.random.permutation(test_data.shape[0]),axis=0,out=shuffled_test)
+
+    # remove spam label and store for comparison later(True/False Positive/Negative)
+    test_labels = shuffled_test[:,-1]
+    shuffled_test = np.delete(shuffled_test, -1, axis=1)
 
     # Results vectors to hold instance probability given spam or not spam
     spam_results = np.zeros(train_spam_stdev.shape)
@@ -191,7 +198,12 @@ if __name__ == "__main__":
     # Vars to hold spam count during testing
     test_spam_count = 0
     test_notspam_count = 0
+    true_positive = 0
+    true_negative = 0
+    false_positive = 0
+    false_negative = 0
 
+    index = 0
     # Use gaussian naive bayes to classify instances in data set
     for test_i in shuffled_test:
         # Calculate probability(spam)
@@ -202,24 +214,82 @@ if __name__ == "__main__":
         spam_max = (sum(spam_results)) + (np.log(prob_train_spam))
         notspam_max = (sum(notspam_results)) + (np.log(prob_train_notspam))
         if(spam_max > notspam_max):
+            # check if labeled spam
+            if(test_labels[index] == 1): # TruePositive
+                true_positive +=1
+            else: # FalsePositive
+                false_positive +=1
+            # increment spam count
             test_spam_count = test_spam_count + 1
         else:
+            #check if not spam
+            if(test_labels[index] == 0): #TrueNegative
+                true_negative +=1
+            else: #FalseNegative
+                false_negative +=1
+            # increment notspam count
             test_notspam_count = test_notspam_count + 1
+        index +=1
+    # // endfor
 
-    # output results
+    #calculate results for output
     total_tested = test_spam_count + test_notspam_count
     percent_spam_predicted = test_spam_count/total_tested
     percent_notspam_predicted = test_notspam_count/total_tested
+    accuracy = (true_positive + true_negative) / total_tested
+    precision = true_positive / (true_positive + false_positive)
+    recall = true_positive / (true_positive + false_negative)
+    false_positive_rate = false_positive / (true_negative + false_positive)
+
+    #accuracy = number of correct classifications/ total
+    #  accuracy = TruePositive + TrueNegative / total examples
+    #precision = fraction of predicted "positive" that are actually positive
+    #  precision = TruePositive / (TruePositive + FalsePositive)
+    #recall = fraction of positive examples predicted as "positive" = true positive rate
+    #  recall = TruePositive / (TruePositive + FalseNegative)
+    # error rate = 1 - accuracy
+    # false positive rate = FalsePositive / TrueNegative + FalsePositive
+
+    #confusion matrix for a given class c:
+    #____________________________________________________________________________
+    #  Actual                   |   Predicted(or "classified")
+    #                           |   Positive            Negative
+    #                           |   (in class spam)     (not in class spam)
+    #                           |------------------------------------------------
+    #  Positive(in class spam)  |   TruePositive        FalseNegative
+    #                           |
+    #                           |
+    #  Negative(not in class)   |   FalsePositive       TrueNegative
+    #                           |
+    #                           |
+    #----------------------------------------------------------------------------
+
+    print(f"\nConfusion Matrix for a given class spam:\n")
+    print(f"|____________________________________________________________________________")
+    print(f"|  Actual                   |    \tPredicted(or 'classified')")
+    print(f"|  {total_tested}                     |\tPositive\t\tNegative")
+    print(f"|                           |\t(in class spam)\t\t(not in class spam)")
+    print(f"|                           |------------------------------------------------")
+    print(f"|  Positive(in class spam)  |\tTruePositive\t\tFalseNegative")
+    print(f"|                           |\t{true_positive}\t\t\t{false_negative}")
+    print(f"|                           |")
+    print(f"|  Negative(not in class)   |\tFalsePositive\t\tTrueNegative")
+    print(f"|                           |\t{false_positive}\t\t\t{true_negative}")
+    print(f"|                           |")
+    print(f"|----------------------------------------------------------------------------\n")
+
+
+    # output results
     #print(f"Total spam predicted = {test_spam_count}\n")
     #print(f"Total notspam predicted = {test_notspam_count}\n")
-    print(f"Percentage of spam predicted in test: {percent_spam_predicted}\n")
-    print(f"Percentage of not spam predicted in test: {percent_notspam_predicted}\n")
+    #print(f"Percentage of not spam predicted in test: {percent_notspam_predicted}\n")
+    print(f"Percent spam predicted after test = {percent_spam_predicted}\n")
+    print(f"accuracy = {accuracy}\n")
+    print(f"precision = {precision}\n")
+    print(f"recall = {recall}\n")
+    print(f"false positive rate = {false_positive_rate}\n")
 
-    #STILL NEED TO DO
-    #accuracy
-    #precision
-    #recall
-    #confusion matrix
+
 
 
 
@@ -268,9 +338,6 @@ if __name__ == "__main__":
 
     #print("")
     print("\n\n")
-
-#    for notes below only
-#    test_labels = spambase_data[:,-1]
 
 #    randomly shuffle data by rows
     #np.take(test_data,np.random.permutation(X.shape[0]),axis=0,out=X)
