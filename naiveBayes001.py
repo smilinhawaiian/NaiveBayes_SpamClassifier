@@ -153,8 +153,6 @@ if __name__ == "__main__":
         train_spam_stdev = np.append(train_spam_stdev, a_row_stdev)
     # // endfor
 
-    #print("")
-
     # Vectors to hold mean and stdev of notspam instances
     train_notspam_mean = np.empty((57,0),int)
     train_notspam_stdev = np.empty((57,0),int)
@@ -170,18 +168,7 @@ if __name__ == "__main__":
         train_notspam_stdev = np.append(train_notspam_stdev, b_row_stdev)
     # // endfor
 
-# 3. 
-# Run Naive Bayes on the test data.
-
-# Randomly mix all the test data
-# Use Gaussian Naive Bayes algorithm to classify instances in your test set,
-# using the means and standard deviations computed in part 2.
-# P(x_i | c_j) = N(x_i ; m_(i,c_j) , stdev_(i,c_j) )
-# where
-# N(x ; m , stdev) = [ (1/ (sqrt(2pi)*stdev) )*( e^ ((x-m)^2 / (2*o^2) ) ) ]
-# *Because product of 58 probabilities will be small, use log of product
-#   since argmax f(z) = argmax log(f(z))
-
+# 3.
 
     #randomly mix the test data (shuffle columns) 
     shuffled_test = np.zeros(test_data.shape)
@@ -215,27 +202,6 @@ if __name__ == "__main__":
     print(f"Total spam predicted = {test_spam_count}\n")
     print(f"Total notspam predicted = {test_notspam_count}\n")
     print(f"Percentage of spam predicted in test: {percent_spam_predicted}\n")
-
-
-
-
-
-
-
-
-
-    #print(f"spam_results: \n{spam_results}\n") # for testing 15.
-    #num_rows = spam_results.shape[0]
-    #num_cols = spam_results.shape[1]
-    #print(f"num rows: {num_rows}\n")
-    #print(f"num cols: {num_cols}\n")
-    #print(f"notspam_results: \n{notspam_results}\n") # for testing 16.
-    #num_rows = notspam_results.shape[0]
-    #num_cols = notspam_results.shape[1]
-    #print(f"num rows: {num_rows}\n")
-    #print(f"num cols: {num_cols}\n")
-
-
 
 
 
@@ -277,32 +243,22 @@ if __name__ == "__main__":
     #print(f"spam_results: \n{spam_results}\n") # for testing 15.
     #print(f"notspam_results: \n{notspam_results}\n") # for testing 16.
 
+    #num_rows = name_data.shape[0]
+    #num_cols = name__data.shape[1]
+    #print(f"num rows: {num_rows}\n")
+    #print(f"num cols: {num_cols}\n")
+
     #print("")
     print("\n\n")
 
 #    for notes below only
-#    test_labels = spambase_data[:,0]
+#    test_labels = spambase_data[:,-1]
 
 #    randomly shuffle data by rows
     #np.take(test_data,np.random.permutation(X.shape[0]),axis=0,out=X)
     #np.random.shuffle(arrayToShuffle) #This is an option
 
-    #print num rows
-    #num_rows = shuffled_test.shape[0]
-    #print(f"num rows: {num_rows}\n")
-    #print num cols
-    #num_cols = shuffled_test.shape[1]
-    #print(f"num cols: {num_cols}\n")
     # works as well
         #a_row_mean = statistics.mean(a_feature)
         #a_row_stdev = statistics.stdev(a_feature, xbar=a_row_mean)+.0001
 
-    # for testing:
-    #print(f"testing_data: \n{testing_data}\n") # for testing 3.
-    #print(f"test_data: \n{test_data}\n") # for testing 6.
-    #print(f"ttest_data: \n{ttest_data}\n") # for testing 9.
-    #print(f"shuffled_test: \n{shuffled_test}\n") # for testing 14.
-    #num_rows = ttest_data.shape[0]
-    #num_cols = ttest_data.shape[1]
-    #print(f"num rows: {num_rows}\n")
-    #print(f"num cols: {num_cols}\n")
