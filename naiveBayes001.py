@@ -113,7 +113,6 @@ if __name__ == "__main__":
     # remove spam/no spam identifying column at end row from each matrix
     train_spam = np.delete(train_data_spam, -1, axis=1)
     train_notspam = np.delete(train_data_notspam, -1, axis=1)
-    #test_data = np.delete(testing_data, -1, axis=1)
 
 
     # 2. 
@@ -139,7 +138,6 @@ if __name__ == "__main__":
 
     # print prior probability of spam test data
     print("Prior Probability of spam = %f \n" %prob_train_spam)
-    # print prior probability of not spam test data
     #print("Prior Probability of not spam = %f \n" %prob_train_notspam)
 
     # Transposed matrices for computation
@@ -181,8 +179,6 @@ if __name__ == "__main__":
     # Run Naive Bayes on the test data.
 
 
-    #test_data = np.delete(testing_data, -1, axis=1)
-
     #randomly mix the test data (shuffle columns) 
     shuffled_test = np.zeros(test_data.shape)
     np.take(test_data,np.random.permutation(test_data.shape[0]),axis=0,out=shuffled_test)
@@ -206,9 +202,9 @@ if __name__ == "__main__":
     index = 0
     # Use gaussian naive bayes to classify instances in data set
     for test_i in shuffled_test:
-        # Calculate probability(spam)
+        # Calculate prediction(spam)
         spam_results = -(np.log(math.sqrt(2*np.pi)*train_spam_stdev))-(((test_i - train_spam_mean)**2)/(2*(train_spam_stdev**2)))
-        # Calculate probability(not spam)
+        # Calculate prediction(not spam)
         notspam_results = -(np.log(math.sqrt(2*np.pi)*train_notspam_stdev))-(((test_i - train_notspam_mean)**2)/(2*(train_notspam_stdev**2)))
         # calculate if prediction spam or notspam is greater
         spam_max = (sum(spam_results)) + (np.log(prob_train_spam))
@@ -266,7 +262,7 @@ if __name__ == "__main__":
 
     print(f"\nConfusion Matrix for a given class spam:\n")
     print(f"|____________________________________________________________________________")
-    print(f"|  Actual                   |    \tPredicted(or 'classified')")
+    print(f"|  Actual Test Instances    |    \tPredicted(or 'classified')")
     print(f"|  {total_tested}                     |\tPositive\t\tNegative")
     print(f"|                           |\t(in class spam)\t\t(not in class spam)")
     print(f"|                           |------------------------------------------------")
@@ -282,12 +278,15 @@ if __name__ == "__main__":
     # output results
     #print(f"Total spam predicted = {test_spam_count}\n")
     #print(f"Total notspam predicted = {test_notspam_count}\n")
-    #print(f"Percentage of not spam predicted in test: {percent_notspam_predicted}\n")
+    #print(f"Percent not spam predicted after test: {percent_notspam_predicted}\n")
     print(f"Percent spam predicted after test = {percent_spam_predicted}\n")
     print(f"accuracy = {accuracy}\n")
     print(f"precision = {precision}\n")
     print(f"recall = {recall}\n")
     print(f"false positive rate = {false_positive_rate}\n")
+
+
+
 
 
 
@@ -338,12 +337,4 @@ if __name__ == "__main__":
 
     #print("")
     print("\n\n")
-
-#    randomly shuffle data by rows
-    #np.take(test_data,np.random.permutation(X.shape[0]),axis=0,out=X)
-    #np.random.shuffle(arrayToShuffle) #This is an option
-
-    # works as well
-        #a_row_mean = statistics.mean(a_feature)
-        #a_row_stdev = statistics.stdev(a_feature, xbar=a_row_mean)+.0001
 
