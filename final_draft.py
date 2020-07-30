@@ -1,6 +1,6 @@
 # Sharice Mayer
-# 2/21/19
-# ML - CS445 HW4
+# 2/23/19
+# Machine Learning
 # Gaussian Naive Bayes Classifier
 # Classify Spambase data from UCI ML repository
 
@@ -69,6 +69,8 @@ if __name__ == "__main__":
     # Read in and create matrice of data
     spambase_data = pd.read_csv("spambase/spambase_copy.csv", header=None).values
     print("\n")
+
+    #print(spambase_data)
 
     # counts for making sure data is split evenly
     spam_count = -1
@@ -240,9 +242,9 @@ if __name__ == "__main__":
 
     #accuracy = number of correct classifications/ total
     #  accuracy = TruePositive + TrueNegative / total examples
-    #precision = fraction of predicted "positive" that are actually positive
+    # precision = fraction of predicted "positive" that are actually positive
     #  precision = TruePositive / (TruePositive + FalsePositive)
-    #recall = fraction of positive examples predicted as "positive" = true positive rate
+    # recall = fraction of positive examples predicted as "positive" = true positive rate
     #  recall = TruePositive / (TruePositive + FalseNegative)
     # error rate = 1 - accuracy
     # false positive rate = FalsePositive / TrueNegative + FalsePositive
@@ -294,9 +296,9 @@ if __name__ == "__main__":
     #____________________________________________________________________________
     #  Actual                   |   Predicted(or "classified")
     #                           |   Positive            Negative
-    #                           |   (in class spam)     (not in class spam)
+    #                           |   (in class ~spam)    (not in class ~spam)
     #                           |------------------------------------------------
-    #  Positive(in class spam)  |   TruePositive        FalseNegative
+    #  Positive(in class ~spam) |   TruePositive        FalseNegative
     #                           |
     #                           |
     #  Negative(not in class)   |   FalsePositive       TrueNegative
@@ -310,7 +312,7 @@ if __name__ == "__main__":
     print(f"|  {total_tested}                     |\tPositive\t\tNegative")
     print(f"|                           |\t(in class ~spam)\t(not in class ~spam)")
     print(f"|                           |------------------------------------------------")
-    print(f"|  Positive(in class spam)  |\tTruePositive\t\tFalseNegative")
+    print(f"|  Positive(in class ~spam) |\tTruePositive\t\tFalseNegative")
     print(f"|                           |\t{true_negative}\t\t\t{false_positive}")
     print(f"|                           |")
     print(f"|  Negative(not in class)   |\tFalsePositive\t\tTrueNegative")
