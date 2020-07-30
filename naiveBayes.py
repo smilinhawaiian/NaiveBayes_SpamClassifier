@@ -1,6 +1,6 @@
 # Sharice Mayer
-# 2/21/19
-# ML - CS445 HW4
+# 2/23/19
+# Machine Learning
 # Gaussian Naive Bayes Classifier
 # Classify Spambase data from UCI ML repository
 
@@ -48,13 +48,13 @@ import math
 #   since argmax f(z) = argmax log(f(z))
 
 
-# In report, include:
-# Description of what I did &&
-# Results for test set: 
-# compute accuracy
-# compute precision
-# compute recall
-# create confusion matrix
+# Report includes:
+# Description
+# Results for test set 
+#   accuracy
+#   precision
+#   recall
+#   confusion matrix
 
 
 
@@ -69,6 +69,8 @@ if __name__ == "__main__":
     # Read in and create matrice of data
     spambase_data = pd.read_csv("spambase/spambase_copy.csv", header=None).values
     print("\n")
+
+    #print(spambase_data)
 
     # counts for making sure data is split evenly
     spam_count = -1
@@ -139,7 +141,7 @@ if __name__ == "__main__":
 
     # print prior probability of spam test data
     print("Prior Probability of spam = %f \n" %prob_train_spam)
-    #print("Prior Probability of not spam = %f \n" %prob_train_notspam)
+    print("Prior Probability of not spam = %f " %prob_train_notspam)
 
     # Transposed matrices for computation
     ttrain_spam = train_spam.transpose()
@@ -240,9 +242,9 @@ if __name__ == "__main__":
 
     #accuracy = number of correct classifications/ total
     #  accuracy = TruePositive + TrueNegative / total examples
-    #precision = fraction of predicted "positive" that are actually positive
+    # precision = fraction of predicted "positive" that are actually positive
     #  precision = TruePositive / (TruePositive + FalsePositive)
-    #recall = fraction of positive examples predicted as "positive" = true positive rate
+    # recall = fraction of positive examples predicted as "positive" = true positive rate
     #  recall = TruePositive / (TruePositive + FalseNegative)
     # error rate = 1 - accuracy
     # false positive rate = FalsePositive / TrueNegative + FalsePositive
@@ -261,7 +263,7 @@ if __name__ == "__main__":
     #                           |
     #----------------------------------------------------------------------------
 
-    print(f"\nConfusion Matrix for a given class spam:\n")
+    print(f"\nConfusion Matrix for a given class spam:")
     print(f"|____________________________________________________________________________")
     print(f"|  Actual Test Instances    |    \tPredicted(or 'classified')")
     print(f"|  {total_tested}                     |\tPositive\t\tNegative")
@@ -277,9 +279,6 @@ if __name__ == "__main__":
 
 
     # output results
-    #print(f"Total spam predicted = {test_spam_count}\n")
-    #print(f"Total notspam predicted = {test_notspam_count}\n")
-    #print(f"Percent not spam predicted after test: {percent_notspam_predicted}\n")
     print(f"Percent spam predicted after test = {percent_spam_predicted}\n")
     print(f"accuracy = {accuracy}\n")
     print(f"precision = {precision}\n")
@@ -288,54 +287,44 @@ if __name__ == "__main__":
 
 
 
+    # calculate for ~spam class
+    nprecision = true_negative / (true_negative + false_negative)
+    nrecall = true_negative / (true_negative + false_positive)
+    nfalse_positive_rate = false_negative / (true_positive + false_negative)
+
+    #confusion matrix for a given class c:
+    #____________________________________________________________________________
+    #  Actual                   |   Predicted(or "classified")
+    #                           |   Positive            Negative
+    #                           |   (in class ~spam)    (not in class ~spam)
+    #                           |------------------------------------------------
+    #  Positive(in class ~spam) |   TruePositive        FalseNegative
+    #                           |
+    #                           |
+    #  Negative(not in class)   |   FalsePositive       TrueNegative
+    #                           |
+    #                           |
+    #----------------------------------------------------------------------------
+
+    print(f"\nConfusion Matrix for a given class ~spam:")
+    print(f"|____________________________________________________________________________")
+    print(f"|  Actual Test Instances    |    \tPredicted(or 'classified')")
+    print(f"|  {total_tested}                     |\tPositive\t\tNegative")
+    print(f"|                           |\t(in class ~spam)\t(not in class ~spam)")
+    print(f"|                           |------------------------------------------------")
+    print(f"|  Positive(in class ~spam) |\tTruePositive\t\tFalseNegative")
+    print(f"|                           |\t{true_negative}\t\t\t{false_positive}")
+    print(f"|                           |")
+    print(f"|  Negative(not in class)   |\tFalsePositive\t\tTrueNegative")
+    print(f"|                           |\t{false_negative}\t\t\t{true_positive}")
+    print(f"|                           |")
+    print(f"|----------------------------------------------------------------------------\n")
 
 
 
-
-
-
-
-#   KEEP ALL BELOW FOR TESTING PURPOSES AS NEEDED UNTIL COMPLETION
-    #print("\n\n")
-    #print("")
-
-    # Spambase data read in from csv file
-    #print(f"spambase_data: \n{spambase_data}\n") # for testing 00.
-    # Shuffled spambase data
-    #print(f"shuffled_base: \n{shuffled_base}\n") # for testing 0.
-
-    # Original matrices created to store training and testing data
-    #print(f"train_data_spam: \n{train_data_spam}\n") # for testing 1.
-    #print(f"train_data_notspam: \n{train_data_notspam}\n") # for testing 2.
-    #print(f"testing_data: \n{testing_data}\n") # for testing 3.
-
-    # Arrays removed spam/no spam identifying column at end row from each matrix
-    #print(f"train_spam: \n{train_spam}\n") # for testing 4.
-    #print(f"train_notspam: \n{train_notspam}\n") # for testing 5.
-    #print(f"test_data: \n{test_data}\n") # for testing 6.
-    
-    # Transposed matrices for computation
-    #print(f"ttrain_spam: \n{ttrain_spam}\n") # for testing 7.
-    #print(f"ttrain_notspam: \n{ttrain_notspam}\n") # for testing 8.
-    #print(f"ttest_data: \n{ttest_data}\n") # for testing 9.
-
-    # Vectors to hold mean and stdev of training spam class instances
-    #print(f"train_spam_mean: \n{train_spam_mean}\n") # for testing 10.
-    #print(f"train_spam_stdev: \n{train_spam_stdev}\n") # for testing 11.
-    #print(f"train_notspam_mean: \n{train_notspam_mean}\n") # for testing 12.
-    #print(f"train_notspam_stdev: \n{train_notspam_stdev}\n") # for testing 13.
-
-    # Shuffled test data
-    #print(f"shuffled_test: \n{shuffled_test}\n") # for testing 14.
-
-    #print(f"spam_results: \n{spam_results}\n") # for testing 15.
-    #print(f"notspam_results: \n{notspam_results}\n") # for testing 16.
-
-    #num_rows = name_data.shape[0]
-    #num_cols = name__data.shape[1]
-    #print(f"num rows: {num_rows}\n")
-    #print(f"num cols: {num_cols}\n")
-
-    #print("")
-    print("\n\n")
-
+    # output results
+    print(f"Percent ~spam predicted after test = {percent_notspam_predicted}\n")
+    print(f"accuracy = {accuracy}\n")
+    print(f"precision = {nprecision}\n")
+    print(f"recall = {nrecall}\n")
+    print(f"false positive rate = {nfalse_positive_rate}\n")
